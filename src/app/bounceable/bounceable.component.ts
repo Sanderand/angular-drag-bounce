@@ -4,9 +4,10 @@ import { Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@ang
 import { BounceableService } from './bounceable.service';
 import { Vector } from './vector.class';
 
-const FRICTION_FACTOR = 0.9;
-const MOMENTUM_TURN_OFF_THRESHOLD = 0.5;
-const BOUNCE_REVERSE_FACTOR = -0.5;
+const AIR_FRICTION_FACTOR = 0.9;
+const EDGE_BOUNCE_FRICTION_FACTOR = 0.5;
+
+const TURN_OFF_MOMENTUM_THRESHOLD = 0.5;
 
 @Component({
     selector: 'as-bounceable',
@@ -69,25 +70,24 @@ export class BounceableComponent implements OnInit {
       this.handleTooFarUpOrDown();
 
       if (!isColliding) {
-        this.applyFriction();
+        this.applyAirFriction();
       }
 
       this.updatePosition();
     }
 
     private handleTooFarLeftOrRight (): void {
-        const actualWidth = this._elementRef.nativeElement.offsetWidth;
         const left = this.position.x;
-        const right = this.position.x + actualWidth;
+        const right = this.position.x + this.width;
 
         if (left < 0) {
             this.position.x = 0;
-            this.momentum.x *= BOUNCE_REVERSE_FACTOR;
+            this.momentum.x *= -EDGE_BOUNCE_FRICTION_FACTOR;
         }
 
         if (right > window.innerWidth) {
-            this.position.x = window.innerWidth - actualWidth;
-            this.momentum.x *= BOUNCE_REVERSE_FACTOR;
+            this.position.x = window.innerWidth - this.width;
+            this.momentum.x *= -EDGE_BOUNCE_FRICTION_FACTOR;
         }
     }
 
@@ -97,21 +97,21 @@ export class BounceableComponent implements OnInit {
 
         if (top < 0) {
             this.position.y = 0;
-            this.momentum.y *= BOUNCE_REVERSE_FACTOR;
+            this.momentum.y *= -EDGE_BOUNCE_FRICTION_FACTOR;
         }
 
         if (bottom > window.innerHeight) {
             this.position.y = window.innerHeight - this.height;
-            this.momentum.y *= BOUNCE_REVERSE_FACTOR;
+            this.momentum.y *= -EDGE_BOUNCE_FRICTION_FACTOR;
         }
     }
 
-    private applyFriction (): void {
-        this.momentum.x *= FRICTION_FACTOR;
-        this.momentum.y *= FRICTION_FACTOR;
+    private applyAirFriction (): void {
+        this.momentum.x *= AIR_FRICTION_FACTOR;
+        this.momentum.y *= AIR_FRICTION_FACTOR;
 
-        if (Math.abs(this.momentum.x) < MOMENTUM_TURN_OFF_THRESHOLD) { this.momentum.x = 0; }
-        if (Math.abs(this.momentum.y) < MOMENTUM_TURN_OFF_THRESHOLD) { this.momentum.y = 0; }
+        if (Math.abs(this.momentum.x) < TURN_OFF_MOMENTUM_THRESHOLD) { this.momentum.x = 0; }
+        if (Math.abs(this.momentum.y) < TURN_OFF_MOMENTUM_THRESHOLD) { this.momentum.y = 0; }
 
         this.isMoving = !(this.momentum.x === 0 && this.momentum.y === 0);
     }
