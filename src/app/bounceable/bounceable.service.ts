@@ -77,6 +77,8 @@ export class BounceableService {
         item.momentum.y += momentum.y * weightRatio;
         item.isMoving = true;
         item.step(isColliding);
+
+        // console.log('is still colliding', this.doItemsCollide(item, forItem));
     });
   }
 

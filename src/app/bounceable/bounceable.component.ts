@@ -1,5 +1,5 @@
-import { Component, ElementRef, HostBinding, HostListener } from '@angular/core';
-import { Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener } from '@angular/core';
 
 import { BounceableService } from './bounceable.service';
 import { Vector } from './vector.class';
@@ -15,13 +15,12 @@ const TURN_OFF_MOMENTUM_THRESHOLD = 0.5;
     styleUrls: ['./bounceable.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class BounceableComponent implements OnInit {
+export class BounceableComponent implements OnInit, AfterViewInit {
     @HostBinding('style.left.px') public get left (): number { return this.position.x; };
     @HostBinding('style.top.px') public get top (): number { return this.position.y; };
 
-    // @HostBinding('style.width.px')
-    public get width (): number { return +this._elementRef.nativeElement.offsetWidth; }
-    public get height (): number { return +this._elementRef.nativeElement.offsetHeight; }
+    public width: number;
+    public height: number;
 
     @Input() public position = new Vector();
     @Input() public momentum = new Vector();
@@ -30,12 +29,19 @@ export class BounceableComponent implements OnInit {
     public isDragging: boolean;
 
     constructor (
+      private _bounceableService: BounceableService,
+      private _changeDetectorRef: ChangeDetectorRef,
       private _elementRef: ElementRef,
-      private _bounceableService: BounceableService
     ) {}
 
     public ngOnInit (): void {
         this._bounceableService.register(this);
+        this._changeDetectorRef.detach();
+    }
+
+    public ngAfterViewInit (): void {
+      this.width = this._elementRef.nativeElement.offsetWidth;
+      this.height = this._elementRef.nativeElement.offsetHeight;
     }
 
     public get weight (): number {
