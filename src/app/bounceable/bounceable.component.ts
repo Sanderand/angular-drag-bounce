@@ -16,15 +16,15 @@ const TURN_OFF_MOMENTUM_THRESHOLD = 0.5;
     encapsulation: ViewEncapsulation.None
 })
 export class BounceableComponent implements OnInit, AfterViewInit {
-    @HostBinding('style.left.px') public get left (): number { return this.position.x; };
-    @HostBinding('style.top.px') public get top (): number { return this.position.y; };
-
-    public width: number;
-    public height: number;
+    @HostBinding('style.transform') public get translation (): string {
+      return `translate3d(${ this.position.x }px, ${ this.position.y }px, 0px)`;
+    }
 
     @Input() public position = new Vector();
     @Input() public momentum = new Vector();
 
+    public width: number;
+    public height: number;
     public isMoving: boolean;
     public isDragging: boolean;
 
