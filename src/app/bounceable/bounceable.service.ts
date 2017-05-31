@@ -1,6 +1,8 @@
+import 'rxjs/add/observable/interval';
+
 import { BounceableComponent } from './bounceable.component';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 import { Vector } from './vector.class';
 
 const FRAMES_PER_SECOND = 50;

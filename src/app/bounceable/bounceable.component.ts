@@ -1,4 +1,5 @@
-import { Component, ElementRef, HostBinding, HostListener, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, HostBinding, HostListener } from '@angular/core';
+import { Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 
 import { BounceableService } from './bounceable.service';
 import { Vector } from './vector.class';
@@ -24,8 +25,8 @@ export class BounceableComponent implements OnInit {
     @Input() public position = new Vector();
     @Input() public momentum = new Vector();
 
-    public isMoving: boolean = false;
-    public isDragging: boolean = false;
+    public isMoving: boolean;
+    public isDragging: boolean;
 
     constructor (
       private _elementRef: ElementRef,
@@ -75,9 +76,9 @@ export class BounceableComponent implements OnInit {
     }
 
     private handleTooFarLeftOrRight (): void {
-        let actualWidth = this._elementRef.nativeElement.offsetWidth;
-        let left = this.position.x;
-        let right = this.position.x + actualWidth;
+        const actualWidth = this._elementRef.nativeElement.offsetWidth;
+        const left = this.position.x;
+        const right = this.position.x + actualWidth;
 
         if (left < 0) {
             this.position.x = 0;
@@ -91,8 +92,8 @@ export class BounceableComponent implements OnInit {
     }
 
     private handleTooFarUpOrDown (): void {
-        let top = this.position.y;
-        let bottom = this.position.y + this.height;
+        const top = this.position.y;
+        const bottom = this.position.y + this.height;
 
         if (top < 0) {
             this.position.y = 0;
