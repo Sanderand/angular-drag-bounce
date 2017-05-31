@@ -1,5 +1,5 @@
 import { AfterViewInit, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, OnDestroy } from '@angular/core';
 
 import { BounceableService } from './bounceable.service';
 import { Vector } from './vector.class';
@@ -15,7 +15,7 @@ const TURN_OFF_MOMENTUM_THRESHOLD = 0.5;
     styleUrls: ['./bounceable.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class BounceableComponent implements OnInit, AfterViewInit {
+export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     @HostBinding('style.transform') public get translation (): string {
       return `translate3d(${ this.position.x }px, ${ this.position.y }px, 0px)`;
     }
@@ -42,6 +42,10 @@ export class BounceableComponent implements OnInit, AfterViewInit {
     public ngAfterViewInit (): void {
       this.width = this._elementRef.nativeElement.offsetWidth;
       this.height = this._elementRef.nativeElement.offsetHeight;
+    }
+
+    public ngOnDestroy (): void {
+        this._bounceableService.unregister(this);
     }
 
     public get weight (): number {

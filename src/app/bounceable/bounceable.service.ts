@@ -27,6 +27,10 @@ export class BounceableService {
     this.items.push(item);
   }
 
+  public unregister (item: BounceableComponent): void {
+    this.items = this.items.filter(i => i !== item);
+  }
+
   private step (): void {
     this.items.forEach(item => item.step());
 
