@@ -25,6 +25,8 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public width: number;
     public height: number;
+    public weight: number;
+
     public isMoving: boolean;
     public isDragging: boolean;
 
@@ -42,14 +44,11 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     public ngAfterViewInit (): void {
       this.width = this._elementRef.nativeElement.offsetWidth;
       this.height = this._elementRef.nativeElement.offsetHeight;
+      this.weight = this.width * this.height;
     }
 
     public ngOnDestroy (): void {
         this._bounceableService.unregister(this);
-    }
-
-    public get weight (): number {
-      return this.width * this.height;
     }
 
     public onMouseDown ($event: Event): void {

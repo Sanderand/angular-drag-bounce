@@ -69,20 +69,26 @@ export class BounceableService {
       .filter(item => this.doItemsCollide(item, forItem))
       .forEach(item => {
         const isColliding = true;
-        const momentum = Object.assign({}, forItem.momentum);
-        const weightRatio = forItem.weight / (forItem.weight + item.weight);
+        const forItemWeightRatio = forItem.weight / (forItem.weight + item.weight);
+        const itemWeightRatio = 1 - forItemWeightRatio;
+        const momentum: Vector = {
+          x: forItem.momentum.x + item.momentum.x,
+          y: forItem.momentum.y + item.momentum.y
+        };
 
-        forItem.momentum.x *= -(1 - weightRatio);
-        forItem.momentum.y *= -(1 - weightRatio);
+        // todo: reset forItem.position to point where forItem and item just touch
+
+        forItem.momentum.x = -forItem.momentum.x * itemWeightRatio;
+        forItem.momentum.y = -forItem.momentum.y * itemWeightRatio;
+
+        item.momentum.x = item.momentum.x + momentum.x * forItemWeightRatio;
+        item.momentum.y = item.momentum.y + momentum.y * forItemWeightRatio;
+
         forItem.isMoving = true;
-        forItem.step(isColliding);
-
-        item.momentum.x += momentum.x * weightRatio;
-        item.momentum.y += momentum.y * weightRatio;
         item.isMoving = true;
-        item.step(isColliding);
 
-        // console.log('is still colliding', this.doItemsCollide(item, forItem));
+        forItem.step(isColliding);
+        item.step(isColliding);
     });
   }
 
