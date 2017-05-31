@@ -1,0 +1,12 @@
+as-bounceable {
+    display: inline-block;
+    cursor: pointer;
+    overflow-y: auto;
+    position: fixed;
+
+    * {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+}
