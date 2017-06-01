@@ -23,6 +23,8 @@ angular on screen containers that are draggable and bounce off each other and th
 ## Things that might come
 1. performance improvements
 2. better collision detections and handling
-3. customizing friction, gravity, bounceability ...
+3. customizing friction, gravity, bounceability, fps ...
+4. modularize
+5. publish on npm
 
 You're more than welcome to create a pull request!
