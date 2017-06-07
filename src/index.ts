@@ -1,1 +1,1 @@
-export * from './bounceable.module.ts';
+export * from './bounceable.module';
