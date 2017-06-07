@@ -10,8 +10,8 @@ import { Vector } from './vector.class';
 
 @Injectable()
 export class BounceableService {
-  public items: Array<BounceableComponent> = [];
-  public dragStart: Vector = new Vector();
+  private _items: Array<BounceableComponent> = [];
+  private _dragStart: Vector = new Vector();
 
   constructor (
     @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any
@@ -20,52 +20,52 @@ export class BounceableService {
 
     Observable
       .interval(1000 / this._bounceableConfig.framesPerSecond)
-      .filter(() => this.items.length > 0)
+      .filter(() => this._items.length > 0)
       .subscribe(() => this.step());
   }
 
   public register (item: BounceableComponent): void {
-    this.items.push(item);
+    this._items.push(item);
   }
 
   public unregister (item: BounceableComponent): void {
-    this.items = this.items.filter(i => i !== item);
+    this._items = this._items.filter(i => i !== item);
   }
 
   private step (): void {
-    this.items.forEach(item => item.step());
+    this._items.forEach(item => item.step());
 
     if (this.hasStateChanged()) {
-      this.items.forEach(item => this.applyCollisions(item));
+      this._items.forEach(item => this.applyCollisions(item));
     }
   }
 
   private setupListeners (): void {
     document.addEventListener('mousedown', $event => {
-      this.dragStart = {
+      this._dragStart = {
         x: $event.clientX,
         y: $event.clientY
       };
 
-      this.items.forEach(i => i.onMouseDown($event));
+      this._items.forEach(i => i.onMouseDown($event));
     });
 
     document.addEventListener('mouseup', $event => {
       const momentum: Vector = {
-        x: ($event.clientX - this.dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
-        y: ($event.clientY - this.dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
+        x: ($event.clientX - this._dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
+        y: ($event.clientY - this._dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
       };
 
-      this.items.forEach(i => i.onMouseUp(momentum));
+      this._items.forEach(i => i.onMouseUp(momentum));
     });
   }
 
   private hasStateChanged (): boolean {
-    return this.items.some(i => i.isMoving);
+    return this._items.some(i => i.isMoving);
   }
 
   private applyCollisions (forItem: BounceableComponent): void {
-    this.items
+    this._items
       .filter(item => item !== forItem)
       .filter(item => this.doItemsCollide(item, forItem))
       .forEach(item => {
