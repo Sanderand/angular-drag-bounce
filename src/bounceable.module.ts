@@ -1,14 +1,15 @@
-import { BounceableConfig, DEFAULT_CONFIG } from './bounceable.config';
+import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
+import { BounceableComponent } from './bounceable.component';
+import { BounceableConfig, DEFAULT_CONFIG } from './bounceable.config';
+import { BounceableService } from './bounceable.service';
 
 import { BOUNCEABLE_CFG } from './bounceable.tokens';
-import { BounceableComponent } from './bounceable.component';
-import { BounceableService } from './bounceable.service';
-import { CommonModule } from '@angular/common';
+import { CollisionService } from './collision.service';
 
 @NgModule({
     imports: [CommonModule],
-    providers: [BounceableService],
+    providers: [BounceableService, CollisionService],
     declarations: [BounceableComponent],
     exports: [BounceableComponent]
 })

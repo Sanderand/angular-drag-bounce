@@ -7,11 +7,12 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
+import { BounceableService } from './bounceable.service';
 
 import { BOUNCEABLE_CFG } from './bounceable.tokens';
-import { BounceableService } from './bounceable.service';
+import { CollisionService } from './collision.service';
 import { Vector } from './vector.class';
 
 @Component({
@@ -35,6 +36,7 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
         @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any,
         private _bounceableService: BounceableService,
         private _changeDetectorRef: ChangeDetectorRef,
+        private _collisionService: CollisionService,
         private _elementRef: ElementRef
     ) {}
 
@@ -73,18 +75,22 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isDragging = false;
     }
 
-    public step (isColliding?: boolean): void {
+    public step (): void {
         if (!this.isMoving) {
             return;
         }
 
+        this.handleCollisions();
         this.handleOutOfContainerBounds();
-
-        if (!isColliding) {
-            this.applyAirFriction();
-        }
-
+        this.applyAirFriction();
         this.updatePosition();
+    }
+
+    private handleCollisions (): void {
+        this._bounceableService.getItems()
+            .filter(item => item !== this)
+            .filter(item => this._collisionService.doItemsCollide(item, this))
+            .forEach(item => this.respondToCollisionWithItem(item));
     }
 
     private handleOutOfContainerBounds (): void {
@@ -112,6 +118,34 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
             this.position.y = document.body.clientHeight - this.height;
             this.momentum.y *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
+    }
+
+    private respondToCollisionWithItem (item: BounceableComponent): void {
+        const overlap = this._collisionService.getItemsOverlap(item, this);
+        const forItemWeightRatio = this.weight / (this.weight + item.weight);
+        const itemWeightRatio = 1 - forItemWeightRatio;
+        const collisionMomentum: Vector = {
+            x: this.momentum.x + item.momentum.x,
+            y: this.momentum.y + item.momentum.y
+        };
+
+        // reset position to collision point
+        let momentumReverseFactor = Math.abs(
+            Math.abs(this.momentum.x) > Math.abs(this.momentum.y)
+            ? overlap.x / this.momentum.x
+            : overlap.y / this.momentum.y
+        );
+
+        this.position.x -= this.momentum.x * momentumReverseFactor;
+        this.position.y -= this.momentum.y * momentumReverseFactor;
+
+        // update momentum for both items
+        this.momentum.x = -this.momentum.x * itemWeightRatio;
+        this.momentum.y = -this.momentum.y * itemWeightRatio;
+        item.momentum.x = item.momentum.x + collisionMomentum.x * forItemWeightRatio;
+        item.momentum.y = item.momentum.y + collisionMomentum.y * forItemWeightRatio;
+
+        item.isMoving = true;
     }
 
     private applyAirFriction (): void {
