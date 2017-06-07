@@ -1,1 +1,1 @@
-export * from './src/index';
+export BounceableModule from './src/bounceable.module';
