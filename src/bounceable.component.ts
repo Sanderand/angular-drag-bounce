@@ -7,7 +7,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 
 import { BOUNCEABLE_CFG } from './bounceable.tokens';
@@ -78,8 +78,7 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
 
-        this.handleTooFarLeftOrRight();
-        this.handleTooFarUpOrDown();
+        this.handleOutOfContainerBounds();
 
         if (!isColliding) {
             this.applyAirFriction();
@@ -88,9 +87,11 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
         this.updatePosition();
     }
 
-    private handleTooFarLeftOrRight (): void {
+    private handleOutOfContainerBounds (): void {
         const left = this.position.x;
         const right = this.position.x + this.width;
+        const top = this.position.y;
+        const bottom = this.position.y + this.height;
 
         if (left < 0) {
             this.position.x = 0;
@@ -101,11 +102,6 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
             this.position.x = document.body.clientWidth - this.width;
             this.momentum.x *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
-    }
-
-    private handleTooFarUpOrDown (): void {
-        const top = this.position.y;
-        const bottom = this.position.y + this.height;
 
         if (top < 0) {
             this.position.y = 0;
