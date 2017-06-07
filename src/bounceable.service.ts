@@ -4,99 +4,98 @@ import { Inject, Injectable } from '@angular/core';
 
 import { BOUNCEABLE_CFG } from './bounceable.tokens';
 import { BounceableComponent } from './bounceable.component';
-import { BounceableConfig } from './bounceable.config';
 import { Observable } from 'rxjs/Observable';
 import { Vector } from './vector.class';
 
 @Injectable()
 export class BounceableService {
-  private _items: Array<BounceableComponent> = [];
-  private _dragStart: Vector = new Vector();
+    private _items: Array<BounceableComponent> = [];
+    private _dragStart: Vector = new Vector();
 
-  constructor (
-    @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any
-  ) {
-    this.setupListeners();
+    constructor (
+        @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any
+    ) {
+        this.setupListeners();
 
-    Observable
-      .interval(1000 / this._bounceableConfig.framesPerSecond)
-      .filter(() => this._items.length > 0)
-      .subscribe(() => this.step());
-  }
-
-  public register (item: BounceableComponent): void {
-    this._items.push(item);
-  }
-
-  public unregister (item: BounceableComponent): void {
-    this._items = this._items.filter(i => i !== item);
-  }
-
-  private step (): void {
-    this._items.forEach(item => item.step());
-
-    if (this.hasStateChanged()) {
-      this._items.forEach(item => this.applyCollisions(item));
+        Observable
+            .interval(1000 / this._bounceableConfig.framesPerSecond)
+            .filter(() => this._items.length > 0)
+            .subscribe(() => this.step());
     }
-  }
 
-  private setupListeners (): void {
-    document.addEventListener('mousedown', $event => {
-      this._dragStart = {
-        x: $event.clientX,
-        y: $event.clientY
-      };
+    public register (item: BounceableComponent): void {
+        this._items.push(item);
+    }
 
-      this._items.forEach(i => i.onMouseDown($event));
-    });
+    public unregister (item: BounceableComponent): void {
+        this._items = this._items.filter(i => i !== item);
+    }
 
-    document.addEventListener('mouseup', $event => {
-      const momentum: Vector = {
-        x: ($event.clientX - this._dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
-        y: ($event.clientY - this._dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
-      };
+    private step (): void {
+        this._items.forEach(item => item.step());
 
-      this._items.forEach(i => i.onMouseUp(momentum));
-    });
-  }
+        if (this.hasStateChanged()) {
+            this._items.forEach(item => this.applyCollisions(item));
+        }
+    }
 
-  private hasStateChanged (): boolean {
-    return this._items.some(i => i.isMoving);
-  }
+    private setupListeners (): void {
+        document.addEventListener('mousedown', $event => {
+            this._dragStart = {
+                x: $event.clientX,
+                y: $event.clientY
+            };
 
-  private applyCollisions (forItem: BounceableComponent): void {
-    this._items
-      .filter(item => item !== forItem)
-      .filter(item => this.doItemsCollide(item, forItem))
-      .forEach(item => {
-        const isColliding = true;
-        const forItemWeightRatio = forItem.weight / (forItem.weight + item.weight);
-        const itemWeightRatio = 1 - forItemWeightRatio;
-        const momentum: Vector = {
-          x: forItem.momentum.x + item.momentum.x,
-          y: forItem.momentum.y + item.momentum.y
-        };
+            this._items.forEach(i => i.onMouseDown($event));
+        });
 
-        // todo: reset forItem.position to point where forItem and item just touch
+        document.addEventListener('mouseup', $event => {
+            const momentum: Vector = {
+                x: ($event.clientX - this._dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
+                y: ($event.clientY - this._dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
+            };
 
-        forItem.momentum.x = -forItem.momentum.x * itemWeightRatio;
-        forItem.momentum.y = -forItem.momentum.y * itemWeightRatio;
+            this._items.forEach(i => i.onMouseUp(momentum));
+        });
+    }
 
-        item.momentum.x = item.momentum.x + momentum.x * forItemWeightRatio;
-        item.momentum.y = item.momentum.y + momentum.y * forItemWeightRatio;
+    private hasStateChanged (): boolean {
+        return this._items.some(i => i.isMoving);
+    }
 
-        forItem.isMoving = true;
-        item.isMoving = true;
+    private applyCollisions (forItem: BounceableComponent): void {
+        this._items
+            .filter(item => item !== forItem)
+            .filter(item => this.doItemsCollide(item, forItem))
+            .forEach(item => {
+                const isColliding = true;
+                const forItemWeightRatio = forItem.weight / (forItem.weight + item.weight);
+                const itemWeightRatio = 1 - forItemWeightRatio;
+                const momentum: Vector = {
+                    x: forItem.momentum.x + item.momentum.x,
+                    y: forItem.momentum.y + item.momentum.y
+                };
 
-        forItem.step(isColliding);
-        item.step(isColliding);
-    });
-  }
+                // todo: reset forItem.position to point where forItem and item just touch
 
-  private doItemsCollide (item1, item2): boolean {
-    return (item1.position.x < item2.position.x + item2.width &&
-      item1.position.x + item1.width > item2.position.x &&
-      item1.position.y < item2.position.y + item2.height &&
-      item1.height + item1.position.y > item2.position.y);
-  }
+                forItem.momentum.x = -forItem.momentum.x * itemWeightRatio;
+                forItem.momentum.y = -forItem.momentum.y * itemWeightRatio;
+
+                item.momentum.x = item.momentum.x + momentum.x * forItemWeightRatio;
+                item.momentum.y = item.momentum.y + momentum.y * forItemWeightRatio;
+
+                forItem.isMoving = true;
+                item.isMoving = true;
+
+                forItem.step(isColliding);
+                item.step(isColliding);
+            });
+    }
+
+    private doItemsCollide (item1, item2): boolean {
+        return (item1.position.x < item2.position.x + item2.width &&
+        item1.position.x + item1.width > item2.position.x &&
+        item1.position.y < item2.position.y + item2.height &&
+        item1.height + item1.position.y > item2.position.y);
+    }
 }

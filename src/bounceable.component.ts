@@ -1,18 +1,16 @@
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostBinding,
-  Inject,
-  Input,
-  OnDestroy,
-  OnInit,
-  ViewEncapsulation,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    Inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
 } from '@angular/core';
 
 import { BOUNCEABLE_CFG } from './bounceable.tokens';
-import { BounceableConfig } from './bounceable.config';
 import { BounceableService } from './bounceable.service';
 import { Vector } from './vector.class';
 
@@ -23,10 +21,6 @@ import { Vector } from './vector.class';
     encapsulation: ViewEncapsulation.None
 })
 export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
-    @HostBinding('style.transform') public get translation (): string {
-      return `translate3d(${ this.position.x }px, ${ this.position.y }px, 0px)`;
-    }
-
     @Input() public position = new Vector();
     @Input() public momentum = new Vector();
 
@@ -38,10 +32,10 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     public isDragging: boolean;
 
     constructor (
-      @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any,
-      private _bounceableService: BounceableService,
-      private _changeDetectorRef: ChangeDetectorRef,
-      private _elementRef: ElementRef,
+        @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any,
+        private _bounceableService: BounceableService,
+        private _changeDetectorRef: ChangeDetectorRef,
+        private _elementRef: ElementRef
     ) {}
 
     public ngOnInit (): void {
@@ -50,9 +44,10 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public ngAfterViewInit (): void {
-      this.width = this._elementRef.nativeElement.offsetWidth;
-      this.height = this._elementRef.nativeElement.offsetHeight;
-      this.weight = this.width * this.height;
+        this.width = this._elementRef.nativeElement.offsetWidth;
+        this.height = this._elementRef.nativeElement.offsetHeight;
+        this.weight = this.width * this.height;
+        this.updatePosition();
     }
 
     public ngOnDestroy (): void {
@@ -63,14 +58,14 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isDragging = false;
 
         if (this._elementRef.nativeElement.contains($event.target)) {
-          $event.preventDefault();
-          this.isDragging = true;
+            $event.preventDefault();
+            this.isDragging = true;
         }
     }
 
     public onMouseUp (momentum: Vector): void {
         if (!this.isDragging) {
-          return;
+            return;
         }
 
         this.momentum = Object.assign({}, momentum);
@@ -79,18 +74,18 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public step (isColliding?: boolean): void {
-      if (!this.isMoving) {
-        return;
-      }
+        if (!this.isMoving) {
+            return;
+        }
 
-      this.handleTooFarLeftOrRight();
-      this.handleTooFarUpOrDown();
+        this.handleTooFarLeftOrRight();
+        this.handleTooFarUpOrDown();
 
-      if (!isColliding) {
-        this.applyAirFriction();
-      }
+        if (!isColliding) {
+            this.applyAirFriction();
+        }
 
-      this.updatePosition();
+        this.updatePosition();
     }
 
     private handleTooFarLeftOrRight (): void {
@@ -102,8 +97,8 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
             this.momentum.x *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
 
-        if (right > window.innerWidth) {
-            this.position.x = window.innerWidth - this.width;
+        if (right > document.body.clientWidth) {
+            this.position.x = document.body.clientWidth - this.width;
             this.momentum.x *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
     }
@@ -117,8 +112,8 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
             this.momentum.y *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
 
-        if (bottom > window.innerHeight) {
-            this.position.y = window.innerHeight - this.height;
+        if (bottom > document.body.clientHeight) {
+            this.position.y = document.body.clientHeight - this.height;
             this.momentum.y *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
     }
@@ -127,8 +122,12 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
         this.momentum.x *= this._bounceableConfig.airFrictionFactor;
         this.momentum.y *= this._bounceableConfig.airFrictionFactor;
 
-        if (Math.abs(this.momentum.x) < this._bounceableConfig.momentumNullThreshold) { this.momentum.x = 0; }
-        if (Math.abs(this.momentum.y) < this._bounceableConfig.momentumNullThreshold) { this.momentum.y = 0; }
+        if (Math.abs(this.momentum.x) < this._bounceableConfig.momentumNullThreshold) {
+            this.momentum.x = 0;
+        }
+        if (Math.abs(this.momentum.y) < this._bounceableConfig.momentumNullThreshold) {
+            this.momentum.y = 0;
+        }
 
         this.isMoving = !(this.momentum.x === 0 && this.momentum.y === 0);
     }
@@ -136,5 +135,7 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     private updatePosition (): void {
         this.position.x += this.momentum.x;
         this.position.y += this.momentum.y;
+
+        this._elementRef.nativeElement.style.transform = `translate3d(${ this.position.x }px, ${ this.position.y }px, 0px)`;
     }
 }
