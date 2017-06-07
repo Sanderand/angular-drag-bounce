@@ -1,4 +1,4 @@
-# angular-drag-bounce
+# Angular Drag Bounce
 on screen containers for angular, that are draggable and bounce off each other and the screens edges!
 
 <img src="https://media.giphy.com/media/3oKIPqAIpzziVWE1nG/giphy.gif">
@@ -20,7 +20,7 @@ on screen containers for angular, that are draggable and bounce off each other a
 </as-bounceable>
 ```
 
-## Configure physics calculation
+### Configure physics calculation
 `BounceableModule.initialize(config?)` takes an optional config parameter of type `BounceableConfig` that lets you overwrite the following values
 - framesPerSecond (default: 50)
 - momentumSlowDownFactor (default: 0.1)
@@ -28,7 +28,7 @@ on screen containers for angular, that are draggable and bounce off each other a
 - airFrictionFactor (default: 0.9)
 - edgeBounceFrictionFactor (default: 0.5)
 
-## Things that might come in the future
+### Things that might come in the future
 1. performance improvements
 2. better collision detections and handling
 3. publish on npm
