@@ -32,5 +32,7 @@ on screen containers for angular, that are draggable and bounce off each other a
 1. performance improvements
 2. better collision detections and handling
 3. publish on npm
+4. use renderer(2) for dom manipulations
+5. use @directive instead of @component
 
 You're more than welcome to create a pull request!
