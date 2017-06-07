@@ -1,13 +1,20 @@
-import { AfterViewInit, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, OnDestroy } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostBinding,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 
+import { BOUNCEABLE_CFG } from './bounceable.tokens';
+import { BounceableConfig } from './bounceable.config';
 import { BounceableService } from './bounceable.service';
 import { Vector } from './vector.class';
-
-const AIR_FRICTION_FACTOR = 0.9;
-const EDGE_BOUNCE_FRICTION_FACTOR = 0.5;
-
-const TURN_OFF_MOMENTUM_THRESHOLD = 0.5;
 
 @Component({
     selector: 'as-bounceable',
@@ -31,6 +38,7 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
     public isDragging: boolean;
 
     constructor (
+      @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any,
       private _bounceableService: BounceableService,
       private _changeDetectorRef: ChangeDetectorRef,
       private _elementRef: ElementRef,
@@ -91,12 +99,12 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (left < 0) {
             this.position.x = 0;
-            this.momentum.x *= -EDGE_BOUNCE_FRICTION_FACTOR;
+            this.momentum.x *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
 
         if (right > window.innerWidth) {
             this.position.x = window.innerWidth - this.width;
-            this.momentum.x *= -EDGE_BOUNCE_FRICTION_FACTOR;
+            this.momentum.x *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
     }
 
@@ -106,21 +114,21 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (top < 0) {
             this.position.y = 0;
-            this.momentum.y *= -EDGE_BOUNCE_FRICTION_FACTOR;
+            this.momentum.y *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
 
         if (bottom > window.innerHeight) {
             this.position.y = window.innerHeight - this.height;
-            this.momentum.y *= -EDGE_BOUNCE_FRICTION_FACTOR;
+            this.momentum.y *= -this._bounceableConfig.edgeBounceFrictionFactor;
         }
     }
 
     private applyAirFriction (): void {
-        this.momentum.x *= AIR_FRICTION_FACTOR;
-        this.momentum.y *= AIR_FRICTION_FACTOR;
+        this.momentum.x *= this._bounceableConfig.airFrictionFactor;
+        this.momentum.y *= this._bounceableConfig.airFrictionFactor;
 
-        if (Math.abs(this.momentum.x) < TURN_OFF_MOMENTUM_THRESHOLD) { this.momentum.x = 0; }
-        if (Math.abs(this.momentum.y) < TURN_OFF_MOMENTUM_THRESHOLD) { this.momentum.y = 0; }
+        if (Math.abs(this.momentum.x) < this._bounceableConfig.momentumNullThreshold) { this.momentum.x = 0; }
+        if (Math.abs(this.momentum.y) < this._bounceableConfig.momentumNullThreshold) { this.momentum.y = 0; }
 
         this.isMoving = !(this.momentum.x === 0 && this.momentum.y === 0);
     }

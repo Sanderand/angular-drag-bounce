@@ -17,9 +17,8 @@ import { NgModule } from '@angular/core';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    BounceableModule
+    BounceableModule.initialize({ framesPerSecond: 50 })
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

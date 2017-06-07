@@ -1,24 +1,25 @@
 import 'rxjs/add/observable/interval';
 
+import { Inject, Injectable } from '@angular/core';
+
+import { BOUNCEABLE_CFG } from './bounceable.tokens';
 import { BounceableComponent } from './bounceable.component';
-import { Injectable } from '@angular/core';
+import { BounceableConfig } from './bounceable.config';
 import { Observable } from 'rxjs/Observable';
 import { Vector } from './vector.class';
-
-const FRAMES_PER_SECOND = 50;
-const INTERVAL_MS = 1000 / FRAMES_PER_SECOND;
-const MOMENTUM_SLOW_DOWN_FACTOR = 0.1;
 
 @Injectable()
 export class BounceableService {
   public items: Array<BounceableComponent> = [];
   public dragStart: Vector = new Vector();
 
-  constructor () {
+  constructor (
+    @Inject(BOUNCEABLE_CFG) private _bounceableConfig: any
+  ) {
     this.setupListeners();
 
     Observable
-      .interval(INTERVAL_MS)
+      .interval(1000 / this._bounceableConfig.framesPerSecond)
       .filter(() => this.items.length > 0)
       .subscribe(() => this.step());
   }
@@ -51,8 +52,8 @@ export class BounceableService {
 
     document.addEventListener('mouseup', $event => {
       const momentum: Vector = {
-        x: ($event.clientX - this.dragStart.x) * MOMENTUM_SLOW_DOWN_FACTOR,
-        y: ($event.clientY - this.dragStart.y) * MOMENTUM_SLOW_DOWN_FACTOR
+        x: ($event.clientX - this.dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
+        y: ($event.clientY - this.dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
       };
 
       this.items.forEach(i => i.onMouseUp(momentum));
