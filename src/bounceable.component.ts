@@ -1,7 +1,7 @@
 import {
 	AfterViewInit,
 	ChangeDetectorRef,
-	Directive,
+	Component,
 	ElementRef,
 	Inject,
 	Input,
@@ -15,8 +15,9 @@ import { BOUNCEABLE_CFG } from './bounceable.tokens';
 import { CollisionService } from './collision.service';
 import { Vector } from './vector.class';
 
-@Directive({
+@Component({
 	selector: 'as-bounceable',
+	template: '<ng-content></ng-content>',
 	styleUrls: ['./bounceable.component.scss'],
 	encapsulation: ViewEncapsulation.None
 })
