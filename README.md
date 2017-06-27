@@ -1,5 +1,5 @@
 # Angular Drag Bounce
-on screen containers for angular, that are draggable and bounce off each other and the screens edges!
+Sweet on screen containers for angular, that are draggable and bounce off each other and the screens edges!
 
 <img src="https://media.giphy.com/media/3oKIPqAIpzziVWE1nG/giphy.gif">
 
