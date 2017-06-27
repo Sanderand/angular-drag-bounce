@@ -6,19 +6,18 @@ Sweet on screen containers for angular, that are draggable and bounce off each o
 ## How to use it
 
 1. import BounceableModule into your root angular module `imports: [ BounceableModule.initialize() ]`
-2. apply directive as-bounceable to DOM element
+2. wrap bounceable DOM in `<as-bounceable></as-bounceable>`
 3. `optional`: set style.position to either `absolute` or `fixed` (default: fixed)
 4. `optional`: bind a start position using `[position]="{x: 10, y: 10}"` (default: {x: 0, y: 0})
 5. `optional`: bind a start momentum using `[momentum]="{x: 0, y: -5}"` (default: {x: 0, y: 0})
 
 ```
-<div
-  as-bounceable
+<as-bounceable
   [position]="{ x: 500, y: 500 }"
   style="position: absolute">
   <h1>My cool draggable and bounceable overlay</h1>
   <p>Lorem ispum dolor sit amet</p>
-</div>
+</as-bounceable>
 ```
 
 ### Configure physics calculation
