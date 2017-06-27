@@ -8,19 +8,19 @@ import { BOUNCEABLE_CFG } from './bounceable.tokens';
 import { CollisionService } from './collision.service';
 
 @NgModule({
-    imports: [CommonModule],
-    providers: [BounceableService, CollisionService],
-    declarations: [BounceableComponent],
-    exports: [BounceableComponent]
+	imports: [CommonModule],
+	providers: [BounceableService, CollisionService],
+	declarations: [BounceableComponent],
+	exports: [BounceableComponent]
 })
 export class BounceableModule {
-    static initialize (config?: BounceableConfig): ModuleWithProviders {
-        return {
-            ngModule: BounceableModule,
-            providers: [{
-                provide: BOUNCEABLE_CFG,
-                useValue: Object.assign(Object.assign({}, DEFAULT_CONFIG), config || {})
-            }]
-        };
-    }
+	static initialize (config?: BounceableConfig): ModuleWithProviders {
+		return {
+			ngModule: BounceableModule,
+			providers: [{
+				provide: BOUNCEABLE_CFG,
+				useValue: Object.assign(Object.assign({}, DEFAULT_CONFIG), config || {})
+			}]
+		};
+	}
 }
