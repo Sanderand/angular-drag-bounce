@@ -5,11 +5,15 @@ Sweet on screen containers for angular, that are draggable and bounce off each o
 
 ## How to use it
 
-1. import BounceableModule into your root angular module `imports: [ BounceableModule.initialize() ]`
-2. apply directive as-bounceable to DOM element
-3. `optional`: set style.position to either `absolute` or `fixed` (default: fixed)
-4. `optional`: bind a start position using `[position]="{x: 10, y: 10}"` (default: {x: 0, y: 0})
-5. `optional`: bind a start momentum using `[momentum]="{x: 0, y: -5}"` (default: {x: 0, y: 0})
+1. `npm i angular-drag-bounce`
+2. import BounceableModule into your root angular module `imports: [ BounceableModule.initialize() ]`
+3. apply directive as-bounceable to DOM element
+
+Optional:
+
+- set style.position to either `absolute` or `fixed` (default: fixed)
+- bind a start position using `[position]="{x: 10, y: 10}"` (default: {x: 0, y: 0})
+- bind a start momentum using `[momentum]="{x: 0, y: -5}"` (default: {x: 0, y: 0})
 
 ```
 <div
