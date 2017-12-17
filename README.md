@@ -18,7 +18,7 @@ Optional:
 ```
 <as-bounceable
   [position]="{ x: 500, y: 500 }"
-  style="position: absolute">
+  style="position: absolute; background: #fff; border: 1px solid #000;">
   <h1>My cool draggable and bounceable overlay</h1>
   <p>Lorem ispum dolor sit amet</p>
 </as-bounceable>
