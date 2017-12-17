@@ -26,14 +26,14 @@ Optional:
 
 ### Configure physics calculation
 `BounceableModule.initialize(config?)` takes an optional config parameter of type `BounceableConfig` that lets you overwrite the following values
-- framesPerSecond (default: `50`)
-- momentumSlowDownFactor (default: `0.1`)
-- momentumNullThreshold (default: `0.5`)
-- airFrictionFactor (default: `0.9`)
-- edgeBounceFrictionFactor (default: `0.5`)
+- framesPerSecond (default: `50`): Calculations per second when containers are moving
+- momentumSlowDownFactor (default: `0.1`): New momentums will get multiplied with this number initially
+- momentumNullThreshold (default: `0.5`): If a containers momentum goes below this value, it will stop moving completely 
+- airFrictionFactor (default: `0.9`): How much of a containers velocity remains after one calculation cycle
+- edgeBounceFrictionFactor (default: `0.5`): How much energy is lost when a container hits the screen edge
 
 ### Things that might come in the future
-1. further performance improvements
-2. use renderer(2) for dom manipulations
+1. Further performance improvements
+2. Use `Renderer`/`Renderer2` for DOM manipulations
 
 Please create pull requests for changes that you'd like to see :)
