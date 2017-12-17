@@ -18,7 +18,7 @@ import { Vector } from './vector.class';
 @Component({
 	selector: 'as-bounceable',
 	template: '<ng-content></ng-content>',
-	styleUrls: ['./bounceable.component.scss'],
+	styleUrls: [ 'bounceable.component.scss' ],
 	encapsulation: ViewEncapsulation.None
 })
 export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {

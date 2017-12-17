@@ -1,0 +1,28 @@
+{
+  "name": "angular-drag-bounce",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sanderand/angular-drag-bounce"
+  },
+  "author": {
+    "name": "Andre Sander",
+    "email": "hello@andresander.com"
+  },
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sanderand/angular-drag-bounce/issues"
+  },
+  "main": "angular-drag-bounce.umd.js",
+  "module": "angular-drag-bounce.js",
+  "jsnext:main": "angular-drag-bounce.js",
+  "typings": "angular-drag-bounce.d.ts",
+  "peerDependencies": {
+    "@angular/core": "^4.0.0",
+    "rxjs": "^5.1.0",
+    "zone.js": "^0.8.4"
+  }
+}
