@@ -26,11 +26,11 @@ Optional:
 
 ### Configure physics calculation
 `BounceableModule.initialize(config?)` takes an optional config parameter of type `BounceableConfig` that lets you overwrite the following values
-- framesPerSecond (default: 50)
-- momentumSlowDownFactor (default: 0.1)
-- momentumNullThreshold (default: 0.5)
-- airFrictionFactor (default: 0.9)
-- edgeBounceFrictionFactor (default: 0.5)
+- framesPerSecond (default: `50`)
+- momentumSlowDownFactor (default: `0.1`)
+- momentumNullThreshold (default: `0.5`)
+- airFrictionFactor (default: `0.9`)
+- edgeBounceFrictionFactor (default: `0.5`)
 
 ### Things that might come in the future
 1. further performance improvements
