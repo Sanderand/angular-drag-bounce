@@ -11,9 +11,9 @@ Sweet on screen containers for angular, that are draggable and bounce off each o
 
 Optional:
 
-- set style.position to either `absolute` or `fixed` (default: fixed)
-- bind a start position using `[position]="{x: 10, y: 10}"` (default: {x: 0, y: 0})
-- bind a start momentum using `[momentum]="{x: 0, y: -5}"` (default: {x: 0, y: 0})
+- set style.position to either `absolute` or `fixed` (default: `fixed`)
+- bind a start position using `[position]="{x: 10, y: 10}"` (default: `{x: 0, y: 0}`)
+- bind a start momentum using `[momentum]="{x: 0, y: -5}"` (default: `{x: 0, y: 0}`)
 
 ```
 <as-bounceable
