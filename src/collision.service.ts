@@ -5,19 +5,17 @@ import { Vector } from './vector.class';
 @Injectable()
 export class CollisionService {
 	public doItemsCollide (item1: BounceableComponent, item2: BounceableComponent): boolean {
-		return item1.position.x < item2.position.x + item2.width && item1.position.x + item1.width > item2.position.x
-			&& item1.position.y < item2.position.y + item2.height && item1.position.y + item1.height > item2.position.y;
+		return item1.left < item2.right
+			&& item1.right > item2.left
+			&& item1.top < item2.bottom
+			&& item1.bottom > item2.top;
 	}
 
 	public getItemsOverlap (item1: BounceableComponent, item2: BounceableComponent): Vector {
-		const overlapXside1 = Math.abs(item1.position.x - item2.position.x + item2.width);
-		const overlapXside2 = Math.abs(item1.position.x + item1.width - item2.position.x);
-		const overlapYside1 = Math.abs(item1.position.y - item2.position.y + item2.height);
-		const overlapYside2 = Math.abs(item1.position.y + item1.height - item2.position.y);
-
-		return {
-			x: Math.min(overlapXside1, overlapXside2),
-			y: Math.min(overlapYside1, overlapYside2)
-		};
+		const overlapXside1 = Math.abs(item1.left - item2.right);
+		const overlapXside2 = Math.abs(item1.right - item2.left);
+		const overlapYside1 = Math.abs(item1.top - item2.bottom);
+		const overlapYside2 = Math.abs(item1.bottom - item2.top);
+		return new Vector(Math.min(overlapXside1, overlapXside2), Math.min(overlapYside1, overlapYside2));
 	}
 }

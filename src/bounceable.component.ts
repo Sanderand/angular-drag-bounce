@@ -7,7 +7,9 @@ import {
 	Input,
 	OnDestroy,
 	OnInit,
-	ViewEncapsulation
+	ViewEncapsulation,
+	OnChanges,
+	SimpleChanges
 } from '@angular/core';
 import { BounceableService } from './bounceable.service';
 
@@ -21,7 +23,7 @@ import { Vector } from './vector.class';
 	styleUrls: [ 'bounceable.component.scss' ],
 	encapsulation: ViewEncapsulation.None
 })
-export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BounceableComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 	@Input() public position = new Vector();
 	@Input() public momentum = new Vector();
 
@@ -43,6 +45,18 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 	public ngOnInit (): void {
 		this._bounceableService.register(this);
 		this._changeDetectorRef.detach();
+	}
+
+	public ngOnChanges (changes: SimpleChanges): void {
+		const { position, momentum } = changes;
+
+		if (position && position.currentValue) {
+			this.position = new Vector(position.currentValue.x, position.currentValue.y);
+		}
+
+		if (momentum && momentum.currentValue) {
+			this.momentum = new Vector(momentum.currentValue.x, momentum.currentValue.y);
+		}
 	}
 
 	public ngAfterViewInit (): void {
@@ -70,7 +84,7 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 			return;
 		}
 
-		this.momentum = Object.assign({}, momentum);
+		this.momentum = new Vector(momentum.x, momentum.y);
 		this.isMoving = true;
 		this.isDragging = false;
 	}
@@ -84,6 +98,22 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.handleOutOfContainerBounds();
 		this.applyAirFriction();
 		this.updatePosition();
+	}
+
+	public get bottom (): number {
+		return this.position.y + this.height;
+	}
+
+	public get top (): number {
+		return this.position.y;
+	}
+
+	public get right (): number {
+		return this.position.x + this.width;
+	}
+
+	public get left (): number {
+		return this.position.x;
 	}
 
 	private handleCollisions (): void {
@@ -121,40 +151,30 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	private respondToCollisionWithItem (item: BounceableComponent): void {
-		const overlap = this._collisionService.getItemsOverlap(item, this);
-		const forItemWeightRatio = this.weight / (this.weight + item.weight);
-		const itemWeightRatio = 1 - forItemWeightRatio;
-		const collisionMomentum: Vector = {
-			x: this.momentum.x + item.momentum.x,
-			y: this.momentum.y + item.momentum.y
-		};
+		const overlapVector = this._collisionService.getItemsOverlap(this, item);
+		const overlapRatioX = Math.abs(overlapVector.x / this.momentum.x);
+		const overlapRatioY = Math.abs(overlapVector.y / this.momentum.y);
+		const itemWeightRatio = this.weight / (this.weight + item.weight);
+		const thisWeightRatio = 1 - itemWeightRatio;
+		const totalImpulse = new Vector(this.momentum.x + item.momentum.x, this.momentum.y + item.momentum.y);
+		const itemImpulse = new Vector(totalImpulse.x * itemWeightRatio, totalImpulse.y * itemWeightRatio);
+		const thisImpulse = new Vector(totalImpulse.x * thisWeightRatio, totalImpulse.y * thisWeightRatio);
+		const setBackVector = new Vector(this.momentum.x, this.momentum.y);
 
-		// reset position to collision point
-		let momentumReverseFactor = Math.abs(
-			Math.abs(this.momentum.x) > Math.abs(this.momentum.y)
-			? overlap.x / this.momentum.x
-			: overlap.y / this.momentum.y
-		);
-
-		this.position.x -= this.momentum.x * momentumReverseFactor;
-		this.position.y -= this.momentum.y * momentumReverseFactor;
-
-		// update momentum for both items
-		this.momentum.x = -this.momentum.x * itemWeightRatio;
-		this.momentum.y = -this.momentum.y * itemWeightRatio;
-		item.momentum.x = item.momentum.x + collisionMomentum.x * forItemWeightRatio;
-		item.momentum.y = item.momentum.y + collisionMomentum.y * forItemWeightRatio;
-
+		setBackVector.multiply((Math.abs(overlapRatioX) < Math.abs(overlapRatioY) ? overlapRatioX : overlapRatioY) * -1.001);
+		this.position.add(setBackVector.x, setBackVector.y);
+		this.momentum.set(-thisImpulse.x, -thisImpulse.y);
+		item.momentum.add(itemImpulse.x, itemImpulse.y);
 		item.isMoving = true;
 	}
 
 	private applyAirFriction (): void {
-		this.momentum.x *= this._bounceableConfig.airFrictionFactor;
-		this.momentum.y *= this._bounceableConfig.airFrictionFactor;
+		this.momentum.multiply(this._bounceableConfig.airFrictionFactor);
 
 		if (Math.abs(this.momentum.x) < this._bounceableConfig.momentumNullThreshold) {
 			this.momentum.x = 0;
 		}
+
 		if (Math.abs(this.momentum.y) < this._bounceableConfig.momentumNullThreshold) {
 			this.momentum.y = 0;
 		}
@@ -163,9 +183,7 @@ export class BounceableComponent implements OnInit, AfterViewInit, OnDestroy {
 	}
 
 	private updatePosition (): void {
-		this.position.x += this.momentum.x;
-		this.position.y += this.momentum.y;
-
+		this.position.add(this.momentum.x, this.momentum.y);
 		this._elementRef.nativeElement.style.transform = `translate3d(${ this.position.x }px, ${ this.position.y }px, 0px)`;
 	}
 }
