@@ -59,19 +59,15 @@ export class BounceableService {
 	}
 
 	private onMouseDown = ($event: MouseEvent): void => {
-		this._dragStart = {
-			x: $event.clientX,
-			y: $event.clientY
-		};
-
+		this._dragStart = new Vector($event.clientX, $event.clientY);
 		this._items.forEach(i => i.onMouseDown($event));
 	};
 
 	private onMouseUp = ($event: MouseEvent): void => {
-			const momentum: Vector = {
-			x: ($event.clientX - this._dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
-			y: ($event.clientY - this._dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
-		};
+		const momentum = new Vector(
+			($event.clientX - this._dragStart.x) * this._bounceableConfig.momentumSlowDownFactor,
+			($event.clientY - this._dragStart.y) * this._bounceableConfig.momentumSlowDownFactor
+		);
 
 		this._items.forEach(i => i.onMouseUp(momentum));
 

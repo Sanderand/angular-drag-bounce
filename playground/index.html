@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="height: 100%;">
+<html>
   <head>
     <title>angular-drag-bounce Playground</title>
     <base href="/">
@@ -15,9 +15,76 @@
     <script>
       System.import('.playground/index.js').catch(function(err){ console.error(err); });
     </script>
+
+    <style type="text/css">
+      * {
+        font-family: sans-serif;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+        width: 100%;
+        height: 100%;
+      }
+
+      as-bounceable {
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.25);
+        padding: 1rem;
+      }
+
+      button {
+        outline: 0;
+        padding: 0.5rem 1rem;
+        background: #b9e4d5;
+        border-radius: 2px;
+        border: 1px solid #b0d2c6;
+        display: inline-block;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #a3c8bb;
+      }
+
+      .app {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin: 1rem;
+      }
+
+      .header {
+        margin: 1rem;
+        padding: 2rem;
+        height: 4rem;
+        background: #eee;
+      }
+
+      .body {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+      }
+
+      .side {
+        margin: 1rem;
+        padding: 2rem;
+        width: 4rem;
+        background: #eee;
+      }
+
+      .main {
+        flex: 1;
+        margin: 1rem;
+        padding: 2rem;
+        background: #eee;
+      }
+    </style>
   </head>
 
-  <body style="height: 100%;">
+  <body>
     <app>Loading AppComponent content here ...</app>
   </body>
 </html>

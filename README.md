@@ -1,7 +1,7 @@
 # Angular Drag Bounce
 Sweet on screen containers for angular, that are draggable and bounce off each other and the screens edges!
 
-<img src="https://media.giphy.com/media/3oKIPqAIpzziVWE1nG/giphy.gif">
+<img src="https://media.giphy.com/media/3oGNSFCC76irP4Jnmo/giphy.gif">
 
 ## How to use it
 
@@ -35,5 +35,7 @@ Optional:
 ### Things that might come in the future
 1. Further performance improvements
 2. Use `Renderer`/`Renderer2` for DOM manipulations
+3. Correctly reflecting collisions
+4. Handle screen resize events
 
 Please create pull requests for changes that you'd like to see :)
