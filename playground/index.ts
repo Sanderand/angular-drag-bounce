@@ -18,6 +18,13 @@ import { BounceableModule }  from 'angular-drag-bounce';
     <h1>My cool draggable and bounceable overlay</h1>
     <p>Lorem ispum dolor sit amet</p>
   </as-bounceable>
+
+  <as-bounceable
+    [position]="{ x: 50, y: 250 }"
+    style="position: absolute; background: #fff;">
+    <button>Doop</button>
+    <button>Bop</button>
+  </as-bounceable>
 </div>
 `
 })
